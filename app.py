@@ -142,3 +142,141 @@ col6.metric(
     "Porcentaje de fallas",
     f"{porcentaje_fallas:.2f}%"
 )
+# ---------------------------
+# NAVEGACIÓN
+# ---------------------------
+seccion = st.sidebar.radio(
+    "Selecciona una sección",
+    [
+        "Producción y calidad",
+        "Variables operativas",
+        "Análisis de fallas",
+        "Datos"
+    ]
+)
+
+# ---------------------------
+# PRODUCCIÓN Y CALIDAD
+# ---------------------------
+if seccion == "Producción y calidad":
+
+    st.header("Producción y calidad")
+
+    produccion_linea = (
+        df_filtrado.groupby("linea", as_index=False)["produccion"]
+        .sum()
+    )
+
+    fig_produccion_linea = px.bar(
+        produccion_linea,
+        x="linea",
+        y="produccion",
+        color="linea",
+        title="Producción acumulada por línea",
+        text_auto=True
+    )
+
+    st.plotly_chart(
+        fig_produccion_linea,
+        use_container_width=True
+    )
+
+    produccion_fecha = (
+        df_filtrado.groupby("fecha", as_index=False)["produccion"]
+        .sum()
+    )
+
+    fig_produccion_fecha = px.line(
+        produccion_fecha,
+        x="fecha",
+        y="produccion",
+        markers=True,
+        title="Evolución diaria de la producción"
+    )
+
+    st.plotly_chart(
+        fig_produccion_fecha,
+        use_container_width=True
+    )
+
+    produccion_turno = (
+        df_filtrado.groupby("turno", as_index=False)["produccion"]
+        .sum()
+    )
+
+    fig_produccion_turno = px.bar(
+        produccion_turno,
+        x="turno",
+        y="produccion",
+        color="turno",
+        title="Producción acumulada por turno",
+        text_auto=True
+    )
+
+    st.plotly_chart(
+        fig_produccion_turno,
+        use_container_width=True
+    )
+
+    calidad_linea = (
+        df_filtrado.groupby("linea", as_index=False)
+        .agg(
+            produccion=("produccion", "sum"),
+            defectos=("defectos", "sum")
+        )
+    )
+
+    calidad_linea["porcentaje_defectos"] = (
+        calidad_linea["defectos"]
+        / calidad_linea["produccion"]
+        * 100
+    ).round(2)
+
+    col_grafica1, col_grafica2 = st.columns(2)
+
+    fig_defectos_linea = px.bar(
+        calidad_linea,
+        x="linea",
+        y="defectos",
+        color="linea",
+        title="Defectos por línea",
+        text_auto=True
+    )
+
+    col_grafica1.plotly_chart(
+        fig_defectos_linea,
+        use_container_width=True
+    )
+
+    fig_porcentaje_defectos = px.bar(
+        calidad_linea,
+        x="linea",
+        y="porcentaje_defectos",
+        color="linea",
+        title="Porcentaje de defectos por línea",
+        text_auto=".2f"
+    )
+
+    col_grafica2.plotly_chart(
+        fig_porcentaje_defectos,
+        use_container_width=True
+    )
+
+    defectos_turno = (
+        df_filtrado.groupby("turno", as_index=False)["defectos"]
+        .sum()
+    )
+
+    fig_defectos_turno = px.bar(
+        defectos_turno,
+        x="turno",
+        y="defectos",
+        color="turno",
+        title="Defectos por turno",
+        text_auto=True
+    )
+
+    st.plotly_chart(
+        fig_defectos_turno,
+        use_container_width=True
+    )
