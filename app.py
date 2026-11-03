@@ -268,7 +268,7 @@ if seccion == "Producción y calidad":
         .sum()
     )
 
-        fig_defectos_turno = px.bar(
+    fig_defectos_turno = px.bar(
         defectos_turno,
         x="turno",
         y="defectos",
@@ -421,7 +421,7 @@ elif seccion == "Análisis de fallas":
         color="estado",
         title="Relación entre vibración y presencia de falla"
     )
- st.plotly_chart(
+    st.plotly_chart(
         fig_relacion,
         use_container_width=True
     )
