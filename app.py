@@ -275,6 +275,62 @@ if seccion == "Producción y calidad":
         title="Defectos por turno",
         text_auto=True
     )
+    # ---------------------------
+# VARIABLES OPERATIVAS
+# ---------------------------
+elif seccion == "Variables operativas":
+
+    st.header("Variables operativas")
+
+    variables_hora = (
+        df_filtrado
+        .set_index("timestamp")
+        .groupby("linea")[
+            ["temperatura", "vibracion", "presion"]
+        ]
+        .resample("1h")
+        .mean()
+        .reset_index()
+    )
+
+    fig_temperatura = px.line(
+        variables_hora,
+        x="timestamp",
+        y="temperatura",
+        color="linea",
+        title="Evolución de la temperatura por línea"
+    )
+
+    st.plotly_chart(
+        fig_temperatura,
+        use_container_width=True
+    )
+
+    fig_vibracion = px.line(
+        variables_hora,
+        x="timestamp",
+        y="vibracion",
+        color="linea",
+        title="Evolución de la vibración por línea"
+    )
+
+    st.plotly_chart(
+        fig_vibracion,
+        use_container_width=True
+    )
+
+    fig_presion = px.line(
+        variables_hora,
+        x="timestamp",
+        y="presion",
+        color="linea",
+        title="Evolución de la presión por línea"
+    )
+
+    st.plotly_chart(
+        fig_presion,
+        use_container_width=True
+    )
 
     st.plotly_chart(
         fig_defectos_turno,
