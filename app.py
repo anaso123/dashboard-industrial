@@ -151,7 +151,8 @@ seccion = st.sidebar.radio(
         "Producción y calidad",
         "Variables operativas",
         "Análisis de fallas",
-        "Datos"
+        "Datos",
+        "Hallazgos y recomendaciones"
     ]
 )
 
@@ -267,13 +268,17 @@ if seccion == "Producción y calidad":
         .sum()
     )
 
-    fig_defectos_turno = px.bar(
+    "Datos"
         defectos_turno,
         x="turno",
         y="defectos",
         color="turno",
         title="Defectos por turno",
         text_auto=True
+    )
+        st.plotly_chart(
+        fig_defectos_turno,
+        use_container_width=True
     )
     # ---------------------------
 # VARIABLES OPERATIVAS
@@ -332,11 +337,7 @@ elif seccion == "Variables operativas":
         use_container_width=True
     )
 
-    st.plotly_chart(
-        fig_defectos_turno,
-        use_container_width=True
-    )
-# ---------------------------
+  # ---------------------------
 # ANÁLISIS DE FALLAS
 # ---------------------------
 elif seccion == "Análisis de fallas":
