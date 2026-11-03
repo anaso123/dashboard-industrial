@@ -336,3 +336,91 @@ elif seccion == "Variables operativas":
         fig_defectos_turno,
         use_container_width=True
     )
+# ---------------------------
+# ANÁLISIS DE FALLAS
+# ---------------------------
+elif seccion == "Análisis de fallas":
+
+    st.header("Análisis de fallas")
+
+    fallas_linea = (
+        df_filtrado.groupby("linea", as_index=False)
+        .agg(
+            total_registros=("falla", "count"),
+            registros_con_falla=("falla", "sum")
+        )
+    )
+
+    fallas_linea["porcentaje_fallas"] = (
+        fallas_linea["registros_con_falla"]
+        / fallas_linea["total_registros"]
+        * 100
+    ).round(2)
+
+    col_falla1, col_falla2 = st.columns(2)
+
+    fig_fallas_linea = px.bar(
+        fallas_linea,
+        x="linea",
+        y="registros_con_falla",
+        color="linea",
+        title="Registros con falla por línea",
+        text_auto=True
+    )
+
+    col_falla1.plotly_chart(
+        fig_fallas_linea,
+        use_container_width=True
+    )
+
+    fig_porcentaje_fallas = px.bar(
+        fallas_linea,
+        x="linea",
+        y="porcentaje_fallas",
+        color="linea",
+        title="Porcentaje de fallas por línea",
+        text_auto=".2f"
+    )
+
+    col_falla2.plotly_chart(
+        fig_porcentaje_fallas,
+        use_container_width=True
+    )
+
+    fallas_fecha = (
+        df_filtrado.groupby("fecha", as_index=False)["falla"]
+        .sum()
+    )
+
+    fig_fallas_fecha = px.line(
+        fallas_fecha,
+        x="fecha",
+        y="falla",
+        markers=True,
+        title="Evolución diaria de las fallas"
+    )
+
+    st.plotly_chart(
+        fig_fallas_fecha,
+        use_container_width=True
+    )
+
+    relacion_falla = df_filtrado.copy()
+
+    relacion_falla["estado"] = relacion_falla["falla"].map({
+        0: "Sin falla",
+        1: "Con falla"
+    })
+
+    fig_relacion = px.box(
+        relacion_falla,
+        x="estado",
+        y="vibracion",
+        color="estado",
+        title="Relación entre vibración y presencia de falla"
+    )
+
+    st.plotly_chart(
+        fig_relacion,
+        use_container_width=True
+    )
