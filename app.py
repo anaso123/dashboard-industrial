@@ -268,7 +268,7 @@ if seccion == "Producción y calidad":
         .sum()
     )
 
-    "Datos"
+        fig_defectos_turno = px.bar(
         defectos_turno,
         x="turno",
         y="defectos",
@@ -276,7 +276,8 @@ if seccion == "Producción y calidad":
         title="Defectos por turno",
         text_auto=True
     )
-        st.plotly_chart(
+
+    st.plotly_chart(
         fig_defectos_turno,
         use_container_width=True
     )
@@ -420,6 +421,10 @@ elif seccion == "Análisis de fallas":
         color="estado",
         title="Relación entre vibración y presencia de falla"
     )
+ st.plotly_chart(
+        fig_relacion,
+        use_container_width=True
+    )
 # ---------------------------
 # HALLAZGOS Y RECOMENDACIONES
 # ---------------------------
@@ -497,11 +502,7 @@ elif seccion == "Hallazgos y recomendaciones":
         "3. Mantener el seguimiento de temperatura, vibración y presión "
         "para identificar cambios asociados con las fallas."
     )
-    st.plotly_chart(
-        fig_relacion,
-        use_container_width=True
-    )
-# ---------------------------
+   # ---------------------------
 # DATOS Y DESCARGA
 # ---------------------------
 elif seccion == "Datos":
