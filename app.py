@@ -424,3 +424,25 @@ elif seccion == "Análisis de fallas":
         fig_relacion,
         use_container_width=True
     )
+# ---------------------------
+# DATOS Y DESCARGA
+# ---------------------------
+elif seccion == "Datos":
+
+    st.header("Datos filtrados")
+
+    st.dataframe(
+        df_filtrado,
+        use_container_width=True
+    )
+
+    csv = df_filtrado.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        label="Descargar datos filtrados en CSV",
+        data=csv,
+        file_name="datos_filtrados.csv",
+        mime="text/csv"
+    )
