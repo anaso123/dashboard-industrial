@@ -420,7 +420,83 @@ elif seccion == "Análisis de fallas":
         color="estado",
         title="Relación entre vibración y presencia de falla"
     )
+# ---------------------------
+# HALLAZGOS Y RECOMENDACIONES
+# ---------------------------
+elif seccion == "Hallazgos y recomendaciones":
 
+    st.header("Hallazgos y recomendaciones")
+
+    resumen_linea = (
+        df_filtrado.groupby("linea", as_index=False)
+        .agg(
+            produccion=("produccion", "sum"),
+            defectos=("defectos", "sum"),
+            total_registros=("falla", "count"),
+            fallas=("falla", "sum")
+        )
+    )
+
+    resumen_linea["porcentaje_defectos"] = (
+        resumen_linea["defectos"]
+        / resumen_linea["produccion"]
+        * 100
+    ).round(2)
+
+    resumen_linea["porcentaje_fallas"] = (
+        resumen_linea["fallas"]
+        / resumen_linea["total_registros"]
+        * 100
+    ).round(2)
+
+    mayor_produccion = resumen_linea.loc[
+        resumen_linea["produccion"].idxmax()
+    ]
+
+    mayor_defectos = resumen_linea.loc[
+        resumen_linea["porcentaje_defectos"].idxmax()
+    ]
+
+    mayor_fallas = resumen_linea.loc[
+        resumen_linea["porcentaje_fallas"].idxmax()
+    ]
+
+    st.subheader("Hallazgos")
+
+    st.write(
+        f"1. La {mayor_produccion['linea']} presenta la mayor "
+        f"producción acumulada, con "
+        f"{mayor_produccion['produccion']:,.0f} unidades."
+    )
+
+    st.write(
+        f"2. La {mayor_defectos['linea']} presenta el mayor "
+        f"porcentaje de defectos, con "
+        f"{mayor_defectos['porcentaje_defectos']:.2f}%."
+    )
+
+    st.write(
+        f"3. La {mayor_fallas['linea']} presenta el mayor "
+        f"porcentaje de fallas, con "
+        f"{mayor_fallas['porcentaje_fallas']:.2f}%."
+    )
+
+    st.subheader("Recomendaciones")
+
+    st.write(
+        f"1. Revisar las condiciones de operación de la "
+        f"{mayor_fallas['linea']} y fortalecer su mantenimiento preventivo."
+    )
+
+    st.write(
+        f"2. Implementar controles adicionales de calidad en la "
+        f"{mayor_defectos['linea']} para reducir el porcentaje de defectos."
+    )
+
+    st.write(
+        "3. Mantener el seguimiento de temperatura, vibración y presión "
+        "para identificar cambios asociados con las fallas."
+    )
     st.plotly_chart(
         fig_relacion,
         use_container_width=True
