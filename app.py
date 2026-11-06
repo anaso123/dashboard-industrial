@@ -554,39 +554,72 @@ elif seccion == "Hallazgos y recomendaciones":
         "La correlación muestra asociación entre variables, "
         "pero no demuestra que una variable sea la causa de otra."
     )
+    # Interpretación sencilla de las correlaciones
+    def interpretar_correlacion(valor):
 
+        magnitud = abs(valor)
+
+        if magnitud < 0.10:
+            intensidad = "prácticamente nula"
+        elif magnitud < 0.30:
+            intensidad = "débil"
+        elif magnitud < 0.50:
+            intensidad = "moderada"
+        else:
+            intensidad = "fuerte"
+
+        if valor > 0:
+            direccion = "positiva"
+        elif valor < 0:
+            direccion = "negativa"
+        else:
+            direccion = "nula"
+
+        return f"{intensidad} y {direccion}"
+
+
+    interpretacion_produccion = interpretar_correlacion(
+        correlacion_produccion_defectos
+    )
+
+    interpretacion_falla = interpretar_correlacion(
+        valor_correlacion_falla
+    )
     st.subheader("Hallazgos")
 
-    st.write(
-        f"1. La {mayor_produccion['linea']} alcanzó la mayor "
-        f"producción acumulada, con "
-        f"{mayor_produccion['produccion']:,.0f} unidades. "
-        f"La correlación entre producción y defectos fue de "
-        f"{correlacion_produccion_defectos:.3f}. Esto permite observar "
-        f"si un aumento de la producción estuvo acompañado por cambios "
-        f"en la cantidad de defectos."
+        st.write(
+        f"1. En los datos seleccionados, la "
+        f"{mayor_produccion['linea']} alcanzó la mayor producción, "
+        f"con {mayor_produccion['produccion']:,.0f} unidades. "
+        f"La relación entre producción y defectos fue "
+        f"{interpretacion_produccion}, con una correlación de "
+        f"{correlacion_produccion_defectos:.3f}. "
+        f"Esto significa que la producción no presentó una relación "
+        f"fuerte con la cantidad de defectos."
     )
 
     st.write(
         f"2. La {mayor_defectos['linea']} presentó el mayor "
         f"porcentaje de defectos, con "
         f"{mayor_defectos['porcentaje_defectos']:.2f}%. "
-        f"Este resultado indica que su nivel de defectos fue alto "
-        f"en relación con la producción alcanzada, no solamente en "
-        f"cantidad absoluta."
+        f"Esto indica que fue la línea con mayor proporción de "
+        f"productos defectuosos frente a su propia producción."
     )
 
     st.write(
         f"3. La {mayor_fallas['linea']} presentó el mayor "
         f"porcentaje de fallas, con "
         f"{mayor_fallas['porcentaje_fallas']:.2f}%. "
-        f"La variable operativa más asociada con la presencia de "
-        f"fallas fue {variable_falla}, con una correlación de "
-        f"{valor_correlacion_falla:.3f}. Su promedio fue "
-        f"{promedio_sin_falla:.2f} en registros sin falla y "
-        f"{promedio_con_falla:.2f} en registros con falla."
+        f"Entre temperatura, vibración y presión, la variable con "
+        f"mayor correlación con las fallas fue {variable_falla}. "
+        f"Sin embargo, la relación fue {interpretacion_falla}, "
+        f"con un valor de {valor_correlacion_falla:.3f}. "
+        f"El promedio de {variable_falla} fue "
+        f"{promedio_sin_falla:.2f} sin falla y "
+        f"{promedio_con_falla:.2f} con falla. "
+        f"Por lo tanto, los datos no permiten afirmar que esta "
+        f"variable sea la causa directa de las fallas."
     )
-
     st.write(
         f"En la {mayor_fallas['linea']}, los promedios operativos "
         f"fueron: temperatura "
