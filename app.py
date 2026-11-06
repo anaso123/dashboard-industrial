@@ -432,6 +432,7 @@ elif seccion == "Hallazgos y recomendaciones":
 
     st.header("Hallazgos y recomendaciones")
 
+    # Resumen por línea
     resumen_linea = (
         df_filtrado.groupby("linea", as_index=False)
         .agg(
@@ -466,41 +467,155 @@ elif seccion == "Hallazgos y recomendaciones":
         resumen_linea["porcentaje_fallas"].idxmax()
     ]
 
+    # Correlación entre variables
+    columnas_correlacion = [
+        "temperatura",
+        "vibracion",
+        "presion",
+        "produccion",
+        "defectos",
+        "falla"
+    ]
+
+    matriz_correlacion = (
+        df_filtrado[columnas_correlacion]
+        .corr()
+        .round(3)
+    )
+
+    correlacion_fallas = (
+        matriz_correlacion["falla"]
+        .drop(["falla", "produccion", "defectos"])
+    )
+
+    variable_falla = correlacion_fallas.abs().idxmax()
+
+    valor_correlacion_falla = correlacion_fallas[
+        variable_falla
+    ]
+
+    correlacion_produccion_defectos = matriz_correlacion.loc[
+        "produccion",
+        "defectos"
+    ]
+
+    # Promedios con falla y sin falla
+    promedios_falla = (
+        df_filtrado.groupby("falla")[
+            ["temperatura", "vibracion", "presion"]
+        ]
+        .mean()
+        .round(2)
+    )
+
+    promedio_sin_falla = promedios_falla.loc[
+        0,
+        variable_falla
+    ]
+
+    promedio_con_falla = promedios_falla.loc[
+        1,
+        variable_falla
+    ]
+
+    # Promedios operativos de la línea con más fallas
+    condiciones_linea_fallas = (
+        df_filtrado[
+            df_filtrado["linea"] == mayor_fallas["linea"]
+        ][
+            ["temperatura", "vibracion", "presion"]
+        ]
+        .mean()
+        .round(2)
+    )
+
+    st.subheader("Análisis de correlaciones")
+
+    st.dataframe(
+        matriz_correlacion,
+        use_container_width=True
+    )
+
+    fig_correlacion = px.imshow(
+        matriz_correlacion,
+        text_auto=True,
+        color_continuous_scale="RdBu_r",
+        zmin=-1,
+        zmax=1,
+        title="Matriz de correlación entre variables"
+    )
+
+    st.plotly_chart(
+        fig_correlacion,
+        use_container_width=True
+    )
+
+    st.caption(
+        "La correlación muestra asociación entre variables, "
+        "pero no demuestra que una variable sea la causa de otra."
+    )
+
     st.subheader("Hallazgos")
 
     st.write(
-        f"1. La {mayor_produccion['linea']} presenta la mayor "
+        f"1. La {mayor_produccion['linea']} alcanzó la mayor "
         f"producción acumulada, con "
-        f"{mayor_produccion['produccion']:,.0f} unidades."
+        f"{mayor_produccion['produccion']:,.0f} unidades. "
+        f"La correlación entre producción y defectos fue de "
+        f"{correlacion_produccion_defectos:.3f}. Esto permite observar "
+        f"si un aumento de la producción estuvo acompañado por cambios "
+        f"en la cantidad de defectos."
     )
 
     st.write(
-        f"2. La {mayor_defectos['linea']} presenta el mayor "
+        f"2. La {mayor_defectos['linea']} presentó el mayor "
         f"porcentaje de defectos, con "
-        f"{mayor_defectos['porcentaje_defectos']:.2f}%."
+        f"{mayor_defectos['porcentaje_defectos']:.2f}%. "
+        f"Este resultado indica que su nivel de defectos fue alto "
+        f"en relación con la producción alcanzada, no solamente en "
+        f"cantidad absoluta."
     )
 
     st.write(
-        f"3. La {mayor_fallas['linea']} presenta el mayor "
+        f"3. La {mayor_fallas['linea']} presentó el mayor "
         f"porcentaje de fallas, con "
-        f"{mayor_fallas['porcentaje_fallas']:.2f}%."
+        f"{mayor_fallas['porcentaje_fallas']:.2f}%. "
+        f"La variable operativa más asociada con la presencia de "
+        f"fallas fue {variable_falla}, con una correlación de "
+        f"{valor_correlacion_falla:.3f}. Su promedio fue "
+        f"{promedio_sin_falla:.2f} en registros sin falla y "
+        f"{promedio_con_falla:.2f} en registros con falla."
+    )
+
+    st.write(
+        f"En la {mayor_fallas['linea']}, los promedios operativos "
+        f"fueron: temperatura "
+        f"{condiciones_linea_fallas['temperatura']:.2f}, vibración "
+        f"{condiciones_linea_fallas['vibracion']:.2f} y presión "
+        f"{condiciones_linea_fallas['presion']:.2f}."
     )
 
     st.subheader("Recomendaciones")
 
     st.write(
-        f"1. Revisar las condiciones de operación de la "
-        f"{mayor_fallas['linea']} y fortalecer su mantenimiento preventivo."
+        f"1. Supervisar especialmente la variable "
+        f"{variable_falla} en la {mayor_fallas['linea']}, porque fue "
+        f"la variable con mayor asociación estadística con las fallas. "
+        f"Se recomienda establecer alertas cuando se aleje de su "
+        f"comportamiento habitual."
     )
 
     st.write(
-        f"2. Implementar controles adicionales de calidad en la "
-        f"{mayor_defectos['linea']} para reducir el porcentaje de defectos."
+        f"2. Revisar el proceso de calidad de la "
+        f"{mayor_defectos['linea']} y comparar sus condiciones de "
+        f"temperatura, vibración y presión con las otras líneas antes "
+        f"de aplicar cambios en el proceso."
     )
 
     st.write(
-        "3. Mantener el seguimiento de temperatura, vibración y presión "
-        "para identificar cambios asociados con las fallas."
+        "3. Analizar periódicamente la correlación entre producción "
+        "y defectos para comprobar si los aumentos de producción están "
+        "acompañados por una pérdida de calidad."
     )
    # ---------------------------
 # DATOS Y DESCARGA
