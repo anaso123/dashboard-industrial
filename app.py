@@ -586,8 +586,7 @@ elif seccion == "Hallazgos y recomendaciones":
         valor_correlacion_falla
     )
     st.subheader("Hallazgos")
-
-        st.write(
+    st.write(
         f"1. En los datos seleccionados, la "
         f"{mayor_produccion['linea']} alcanzó la mayor producción, "
         f"con {mayor_produccion['produccion']:,.0f} unidades. "
