@@ -25,6 +25,7 @@ Ana Sofia Pineda Pineda
 Andrea Carolina Zuleta Perez
 
 Sofia Ocampo
+
 Conclusión
 
 El dashboard permite consultar de manera interactiva el comportamiento de la planta industrial y comparar sus líneas y turnos. También facilita la identificación de problemas relacionados con defectos y fallas mediante indicadores, visualizaciones y análisis de correlación.
