@@ -18,7 +18,8 @@ El video de presentación del proyecto se encuentra disponible en:
 
 PEGAR_AQUI_EL_ENLACE_DE_YOUTUBE
 
-Integrantes
+Integrantes:
+
 Ana Sofia Pineda Pineda
 
 Andrea Carolina Zuleta Perez
