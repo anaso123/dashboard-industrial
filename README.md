@@ -20,7 +20,9 @@ PEGAR_AQUI_EL_ENLACE_DE_YOUTUBE
 
 Integrantes
 Ana Sofia Pineda Pineda
+
 Andrea Carolina Zuleta Perez
+
 Sofia Ocampo
 Conclusión
 
