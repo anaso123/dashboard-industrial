@@ -16,7 +16,7 @@ Video de sustentación
 
 El video de presentación del proyecto se encuentra disponible en:
 
-PEGAR_AQUI_EL_ENLACE_DE_YOUTUBE
+https://youtu.be/VBex4dPxLUU?si=cxY6UKhN5R7NDB-5 
 
 Integrantes:
 
